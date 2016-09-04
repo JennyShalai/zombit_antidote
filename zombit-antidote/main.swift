@@ -60,7 +60,7 @@ func answer(input: [[Int]]) -> Int {
     let deltaTimeFrames = Array(meetingsTimeFrame.keys).sort { $0 < $1 }
     
     for delta in deltaTimeFrames {
-        // try to put meedting in calendar (boolian day) if there is an epty slot
+        // try to put meedting in calendar (boolian day) if there is an empty slot
         if let meetings = meetingsTimeFrame[delta]{
             
             for meeting in meetings {
