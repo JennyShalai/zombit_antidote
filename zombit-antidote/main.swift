@@ -11,6 +11,8 @@ import Foundation
 func answer(input: [[Int]]) -> Int {
     
     var shortestMeetingForEachStart: [Int: [Int]] = [:]
+    var meetingsTimeFrame: [Int: [Array<Int>]] = [:]
+    
     
     for meeting in input {
         // make a dictionary where key is the beginning of the section and
@@ -30,12 +32,22 @@ func answer(input: [[Int]]) -> Int {
             }
         }
     }
-    
     print(shortestMeetingForEachStart)
     
     
-    
-    
+    for (_, value) in shortestMeetingForEachStart {
+        // make dictionary where key is "delta-time" that meeting goes and
+        // value is meetings themselfs
+        // so for input like [2: [2, 3], 3: [3, 4], 1: [1, 3]]
+        // output will be -> [2: [[1, 3]], 1: [[2, 3], [3, 4]]]
+        let deltaTime = value.last! - value.first!
+        if meetingsTimeFrame[deltaTime] == nil {
+            meetingsTimeFrame[deltaTime] = [value]
+        } else {
+            meetingsTimeFrame[deltaTime]?.append(value)
+        }
+    }
+    print(meetingsTimeFrame)
     
     
     return 0
