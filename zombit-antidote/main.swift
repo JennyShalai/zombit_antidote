@@ -10,9 +10,11 @@ import Foundation
 
 func answer(input: [[Int]]) -> Int {
     
+    var result: Int = 0
     var shortestMeetingForEachStart: [Int: [Int]] = [:]
     var meetingsTimeFrame: [Int: [Array<Int>]] = [:]
-    
+    // meetings day time goes from 0 to 1-000-000
+    var day: [Bool] = []
     
     for meeting in input {
         // make a dictionary where key is the beginning of the section and
@@ -49,11 +51,46 @@ func answer(input: [[Int]]) -> Int {
     }
     print(meetingsTimeFrame)
     
+    // let's say our day is not booked yet means any time during the day is false
+    for _ in 0...1000000 {
+        day.append(false)
+    }
     
-    return 0
+    // time-frame for meeting from losert to highest
+    let deltaTimeFrames = Array(meetingsTimeFrame.keys).sort { $0 < $1 }
+    
+    for delta in deltaTimeFrames {
+        // try to put meedting in calendar (boolian day) if there is an epty slot
+        if let meetings = meetingsTimeFrame[delta]{
+            
+            for meeting in meetings {
+                var canAdd = true
+                for i in meeting.first!..<meeting.last! {
+                    // check if there any overlaping
+                    if day[i] == true {
+                        canAdd = false
+                        break
+                    }
+                }
+                // if no overlaping - book the meeting
+                if canAdd {
+                    for i in meeting.first!..<meeting.last! {
+                        day[i] = true
+                        result += 1
+                    }
+                }
+            }
+            
+        }
+    }
+    
+    return result
 }
 
 let input1 = [[1, 3], [3, 4], [2, 3], [2, 4]]
+let input2 = [[0, 1], [1, 2], [2, 3], [3, 5], [4, 5]]
+let input3 = [[0, 1000000], [42, 43], [0, 1000000], [42, 43]]
 
 print(answer(input1))
-
+print(answer(input2))
+print(answer(input3))
