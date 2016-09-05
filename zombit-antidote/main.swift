@@ -76,8 +76,8 @@ func answer(input: [[Int]]) -> Int {
                 if canAdd {
                     for i in meeting.first!..<meeting.last! {
                         day[i] = true
-                        result += 1
                     }
+                    result += 1
                 }
             }
             
