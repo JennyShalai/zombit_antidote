@@ -5,7 +5,7 @@ def answer(meetings):
 
     result = []
     shortestMeetingForEachStart = {}
-    meetingsTimeFrame = {}
+    
     # meetings day time goes from 0 to 1-000-000
     # let's say our day is not booked yet means any time during the day is false
     day = [False] * 1000000
@@ -25,39 +25,30 @@ def answer(meetings):
                 shortestMeetingForEachStart[meetingStart] = meeting
         else:
             shortestMeetingForEachStart[meetingStart] = meeting
+
+    # all meeting (each of them shortest for starting time)
+    # sorted from low to high by ending time
+    # for ->  [[0, 6], [7, 13], [14, 20], [5, 8], [12, 15]]
+    # will be [[0, 6], [5, 8], [7, 13], [12, 15], [14, 20]]
+    timeFrames = shortestMeetingForEachStart.values()
+    from operator import itemgetter
+    timeFrames.sort(key=itemgetter(1), reverse=False)
     
-    for (key, value) in shortestMeetingForEachStart.items():
-        # make dictionary where key is "delta-time" that meeting goes and
-        # value is meetings themselfs
-        # so for input like [2: [2, 3], 3: [3, 4], 1: [1, 3]]
-        # output will be -> [2: [[1, 3]], 1: [[2, 3], [3, 4]]]
-        deltaTime = value[1] - value[0]
-        if deltaTime in meetingsTimeFrame:
-            meetingsTimeFrame[deltaTime].append(value)
-        else:
-            meetingsTimeFrame[deltaTime] = [value]
+    for frame in timeFrames:
+        canAdd = True
+        # check if there any overlapping
+        for i in range(frame[0], frame[1]):
+            if day[i] == True:
+                canAdd = False
+                break
 
-    print(meetingsTimeFrame)
+        # if no overlapping - book the meeting
+        if canAdd:
+            for i in range(frame[0], frame[1]):
+                day[i] = True
+            result.append(frame)
 
-    # time-frame for meeting from lowest to highest
-    deltaTimeFrames = sorted(meetingsTimeFrame.keys(), key = int, reverse = False)
 
-    for delta in deltaTimeFrames:
-        # try to put meedting in calendar (boolean day) if there is an empty slot
-        meetings = meetingsTimeFrame[delta]
-        for meeting in meetings:
-            canAdd = True
-            # check if there any overlapping
-            for i in range(meeting[0], meeting[1]):
-                if day[i] == True:
-                    canAdd = False
-                    break
-            
-            # if no overlapping - book the meeting
-            if canAdd:
-                for i in range(meeting[0], meeting[1]):
-                    day[i] = True
-                result.append(meeting)
     return len(result)
 
 
@@ -67,10 +58,10 @@ input2 = [[0, 1], [1, 2], [2, 3], [3, 5], [4, 5]]
 input3 = [[0, 1000000], [42, 43], [0, 1000000], [42, 43]]
 input4 = [[0, 999999], [999999, 1000000]]
 input5 = [[0, 6], [7, 13], [14, 20], [5, 8], [12, 15]]
-#print(answer(input1))
-#print(answer(input2))
-#print(answer(input3))
-#print(answer(input4))
+print(answer(input1))
+print(answer(input2))
+print(answer(input3))
+print(answer(input4))
 print(answer(input5))
 
 
